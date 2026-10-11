@@ -491,7 +491,7 @@ class Wheel {
 /* --------------------------------------------------------------------------
    INSTANCIACIÓN DE LAS RULETAS
    -------------------------------------------------------------------------- */
-const defaultList1 = 'Danna Sofia Amaris Camargo\nIvanna Arias Terán\nHannah Lucia Ariza Navarro\nYorgelis Arrieta Garcia\nSara Sofia Avila Cardenas';
+const defaultList1 = 'Maria\nSofia\nLuis\nDaniel\nDavid';
 const defaultList2 = 'Tema 1\nTema 2\nTema 3\nTema 4';
 
 const wheel1 = new Wheel(1, 'canvas1', 'input1', 'counter1', 'saveStatus1', 'voicePrefix1', 'spinBtn1', 'clearBtn1', 'importBtn1', 'Ruleta 1', defaultList1, 'Turno de');
