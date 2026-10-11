@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ruleta de Participación Escolar</title>
+
+    <!-- Hoja de estilos externa -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+    <!-- Encabezado Principal -->
+    <header>
+        <h1>Ruleta de Participación</h1>
+        <p>Organizador y selector interactivo para el aula de clase</p>
+    </header>
+
+    <!-- Barra Superior Flotante / Sticky de Configuración -->
+    <div class="sticky-bar-wrapper">
+        <div class="top-controls">
+
+            <!-- Selector de comportamiento del ganador -->
+            <div class="config-item">
+                <label for="removalMode">Al seleccionar:</label>
+                <select id="removalMode">
+                    <option value="manual">Preguntar (Manual)</option>
+                    <option value="auto">Eliminar automático</option>
+                    <option value="keep">Mantener siempre</option>
+                </select>
+            </div>
+
+            <!-- Tiempo de cuenta regresiva para el modo automático -->
+            <div class="config-item hidden" id="autoTimeWrapper">
+                <label for="autoTimeInput">Espera:</label>
+                <input type="number" id="autoTimeInput" min="2" max="30" value="4">
+                <span>seg</span>
+            </div>
+
+            <!-- Botones de control global -->
+            <button id="toggleWheel2Btn" class="btn-toggle">+ Añadir Segunda Ruleta</button>
+            <button id="spinAllBtn" class="btn-spin-all hidden" disabled>Girar Ambas a la Vez</button>
+        </div>
+    </div>
+
+    <!-- Rejilla Principal de Ruletas -->
+    <main class="wheels-grid">
+
+        <!-- ==================== RULETA 1 (Estudiantes) ==================== -->
+        <section class="wheel-unit" id="unit1">
+            <div class="wheel-header">
+                <h2>Ruleta 1</h2>
+                <div class="header-actions">
+                    <button id="importBtn1" class="btn-action-sm btn-import">⚡ Pegar de Plataforma</button>
+                    <button id="clearBtn1" class="btn-action-sm btn-clear">Vaciar</button>
+                </div>
+            </div>
+
+            <!-- Frase personalizada para síntesis de voz -->
+            <div class="voice-prefix-wrapper">
+                <label for="voicePrefix1">Anunciar con:</label>
+                <input type="text" id="voicePrefix1" value="Turno de">
+            </div>
+
+            <!-- Caja de texto con persistencia en localStorage -->
+            <div class="textarea-wrapper">
+                <textarea id="input1" placeholder="Pega los nombres aquí..."></textarea>
+                <div class="counter">
+                    <span id="saveStatus1" class="save-status">Sincronizado</span>
+                    <span id="counter1">Total: 0 nombres</span>
+                </div>
+            </div>
+
+            <!-- Escenario visual de la Ruleta -->
+            <div class="wheel-stage">
+                <div class="pointer"></div>
+                <canvas id="canvas1" width="370" height="370" title="Haz clic sobre la ruleta para girar"></canvas>
+                <button id="spinBtn1" class="btn-spin" disabled>¡Girar Ruleta 1!</button>
+            </div>
+        </section>
+
+        <!-- ==================== RULETA 2 (Temas / Actividades) ==================== -->
+        <section class="wheel-unit hidden" id="unit2">
+            <div class="wheel-header">
+                <h2>Ruleta 2</h2>
+                <div class="header-actions">
+                    <button id="importBtn2" class="btn-action-sm btn-import">⚡ Pegar de Plataforma</button>
+                    <button id="clearBtn2" class="btn-action-sm btn-clear">Vaciar</button>
+                </div>
+            </div>
+
+            <!-- Frase personalizada para síntesis de voz -->
+            <div class="voice-prefix-wrapper">
+                <label for="voicePrefix2">Anunciar con:</label>
+                <input type="text" id="voicePrefix2" value="Tema">
+            </div>
+
+            <!-- Caja de texto con persistencia en localStorage -->
+            <div class="textarea-wrapper">
+                <textarea id="input2" placeholder="Tema 1&#10;Tema 2&#10;Tema 3&#10;Tema 4"></textarea>
+                <div class="counter">
+                    <span id="saveStatus2" class="save-status">Sincronizado</span>
+                    <span id="counter2">Total: 0 temas</span>
+                </div>
+            </div>
+
+            <!-- Escenario visual de la Ruleta -->
+            <div class="wheel-stage">
+                <div class="pointer"></div>
+                <canvas id="canvas2" width="370" height="370" title="Haz clic sobre la ruleta para girar"></canvas>
+                <button id="spinBtn2" class="btn-spin" disabled>¡Girar Ruleta 2!</button>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ==================== MODALES DEL SISTEMA ==================== -->
+
+    <!-- 1. Modal de Anuncio de Ganadores (Individual o Dual) -->
+    <div id="modalOverlay" class="modal-overlay">
+        <div class="modal">
+            <h3 id="modalTitle">¡Resultado del Giro!</h3>
+            <div id="resultsContainer" class="results-container"></div>
+            <div id="modalTimer" class="modal-timer"></div>
+            <button id="closeAllBtn" class="btn-close-all">Listo / Continuar</button>
+        </div>
+    </div>
+
+    <!-- 2. Modal de Confirmación para Vaciar Listas -->
+    <div id="confirmOverlay" class="modal-overlay">
+        <div class="modal confirm-modal">
+            <h3 id="confirmTitle">¿Vaciar lista?</h3>
+            <p id="confirmMessage">Esta acción borrará todos los elementos guardados. ¿Deseas continuar?</p>
+            <div class="confirm-actions">
+                <button id="cancelConfirmBtn" class="btn btn-cancel">Cancelar</button>
+                <button id="acceptConfirmBtn" class="btn btn-remove">Sí, vaciar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. Modal Extractor Inteligente (Limpia volcados de plataformas educativas) -->
+    <div id="cleanerOverlay" class="modal-overlay">
+        <div class="modal cleaner-modal">
+            <h3 id="cleanerTitle">Importar y Limpiar Lista</h3>
+            <p class="cleaner-desc">
+                Pega abajo el texto copiado de la plataforma (incluso con notas, correos y faltas). Se extraerán los
+                nombres automáticamente:
+            </p>
+            <textarea id="rawInput" class="cleaner-textarea"
+                placeholder="Pega aquí todo el texto copiado de la plataforma..."></textarea>
+
+            <div class="cleaner-options">
+                <label>
+                    <input type="checkbox" id="invertNameOrder" checked>
+                    Invertir a formato natural ("Danna Sofia Amaris Camargo") para pronunciación fluida
+                </label>
+                <label>
+                    <input type="checkbox" id="toTitleCase" checked>
+                    Convertir a tipo Título (Mayúsculas y minúsculas)
+                </label>
+            </div>
+
+            <div id="cleanerFeedback" class="cleaner-feedback"></div>
+
+            <div class="confirm-actions">
+                <button id="cancelCleanerBtn" class="btn btn-cancel">Cancelar</button>
+                <button id="processCleanerBtn" class="btn btn-keep btn-accent">Procesar e Insertar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script principal del cliente -->
+    <script src="app.js"></script>
+</body>
+
+</html>
