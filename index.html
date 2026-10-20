@@ -1,10 +1,17 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="light">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ruleta de Participación Escolar</title>
+    <title>UparWheel Studio - Ruleta de Participación Escolar</title>
+
+    <!-- Google Fonts: Inter & JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <!-- Hoja de estilos externa -->
     <link rel="stylesheet" href="styles.css">
@@ -12,36 +19,121 @@
 
 <body>
 
-    <!-- Encabezado Principal -->
-    <header>
-        <h1>Ruleta de Participación</h1>
-        <p>Organizador y selector interactivo para el aula de clase</p>
+    <!-- Barra Superior Estilo Studio -->
+    <header class="app-header">
+        <div class="header-container">
+            <!-- Logo y Título -->
+            <div class="brand-group">
+                <div class="brand-icon">
+                    <i class="fa-solid fa-dharmachakra"></i>
+                </div>
+                <div>
+                    <div class="brand-title-row">
+                        <h1><span id="uiMainTitle">Ruleta de Participación</span></h1>
+                        <span id="uiBadgeInteractive" class="badge-pill">Interactivo</span>
+                    </div>
+                    <p id="uiMainSubtitle">Organizador y selector interactivo para el aula de clase</p>
+                </div>
+            </div>
+
+            <!-- Controles Globales de Barra Superior (Idioma, Tema, Configuración) -->
+            <div class="header-utilities">
+                <!-- Botón Idioma ES/EN -->
+                <button id="btnLangToggle" class="btn-utility" title="Cambiar Idioma / Switch Language">
+                    <i class="fa-solid fa-globe text-indigo"></i>
+                    <span id="langLabel">ES</span>
+                </button>
+
+                <!-- Botón Tema Claro/Oscuro -->
+                <button id="btnThemeToggle" class="btn-utility btn-icon-only" title="Cambiar tema Claro / Oscuro">
+                    <i id="themeIcon" class="fa-solid fa-moon text-indigo"></i>
+                </button>
+
+                <!-- Botón y Menú Desplegable de Configuración (Voz y Sonido) -->
+                <div class="settings-dropdown-wrapper">
+                    <button id="btnSettingsToggle" class="btn-utility" title="Configuración de Voz y Sonido">
+                        <i class="fa-solid fa-sliders text-indigo"></i>
+                        <span id="uiBtnSettings" class="hide-sm">Configuración</span>
+                    </button>
+
+                    <!-- Panel Flotante de Configuración -->
+                    <div id="settingsMenu" class="settings-popover hidden">
+                        <div class="settings-popover-header">
+                            <h4><i class="fa-solid fa-volume-high text-indigo"></i> <span id="uiSettingsTitle">Ajustes de Voz y Sonido</span></h4>
+                            <button id="btnTestVoice" class="btn-test-voice" title="Probar voz actual">
+                                <i class="fa-solid fa-play"></i> <span id="uiBtnTestVoice">Probar</span>
+                            </button>
+                        </div>
+
+                        <div class="settings-group">
+                            <label for="voiceRateSelect" id="uiLabelVoiceRate">Velocidad de habla</label>
+                            <select id="voiceRateSelect">
+                                <option value="0.75" id="optRateSlow">Lento (0.75x)</option>
+                                <option value="0.95" selected id="optRateNormal">Normal (1.0x)</option>
+                                <option value="1.25" id="optRateFast">Rápido (1.25x)</option>
+                            </select>
+                        </div>
+
+                        <div class="settings-group">
+                            <label for="voiceNarratorSelect" id="uiLabelNarrator">Narrador del navegador</label>
+                            <select id="voiceNarratorSelect">
+                                <option value="default">Predeterminado del sistema</option>
+                            </select>
+                        </div>
+
+                        <div class="settings-divider"></div>
+
+                        <label class="settings-switch-row" for="muteNarratorToggle">
+                            <span class="switch-label">
+                                <i class="fa-solid fa-microphone-slash text-muted-icon"></i>
+                                <span id="uiLabelMuteNarrator">Silenciar narrador</span>
+                            </span>
+                            <input type="checkbox" id="muteNarratorToggle">
+                        </label>
+
+                        <label class="settings-switch-row" for="wheelSoundToggle">
+                            <span class="switch-label">
+                                <i class="fa-solid fa-music text-indigo"></i>
+                                <span id="uiLabelWheelSound">Sonido de ruleta al girar</span>
+                            </span>
+                            <input type="checkbox" id="wheelSoundToggle" checked>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
     </header>
 
-    <!-- Barra Superior Flotante / Sticky de Configuración -->
+    <!-- Barra de Controles de Juego (Sticky) -->
     <div class="sticky-bar-wrapper">
         <div class="top-controls">
 
             <!-- Selector de comportamiento del ganador -->
             <div class="config-item">
-                <label for="removalMode">Al seleccionar:</label>
+                <i class="fa-solid fa-user-check text-indigo"></i>
+                <label for="removalMode" id="uiLabelRemovalMode">Al seleccionar:</label>
                 <select id="removalMode">
-                    <option value="manual">Preguntar (Manual)</option>
-                    <option value="auto">Eliminar automático</option>
-                    <option value="keep">Mantener siempre</option>
+                    <option value="manual" id="optModeManual">Preguntar (Manual)</option>
+                    <option value="auto" id="optModeAuto">Eliminar automático</option>
+                    <option value="keep" id="optModeKeep">Mantener siempre</option>
                 </select>
             </div>
 
             <!-- Tiempo de cuenta regresiva para el modo automático -->
             <div class="config-item hidden" id="autoTimeWrapper">
-                <label for="autoTimeInput">Espera:</label>
+                <i class="fa-regular fa-clock text-indigo"></i>
+                <label for="autoTimeInput" id="uiLabelAutoWait">Espera:</label>
                 <input type="number" id="autoTimeInput" min="2" max="30" value="4">
-                <span>seg</span>
+                <span id="uiLabelSeconds">seg</span>
             </div>
 
-            <!-- Botones de control global -->
-            <button id="toggleWheel2Btn" class="btn-toggle">+ Añadir Segunda Ruleta</button>
-            <button id="spinAllBtn" class="btn-spin-all hidden" disabled>Girar Ambas a la Vez</button>
+            <div class="controls-actions">
+                <!-- Botones de control global -->
+                <button id="toggleWheel2Btn" class="btn-toggle">+ Añadir Segunda Ruleta</button>
+                <button id="spinAllBtn" class="btn-spin-all hidden" disabled>
+                    <i class="fa-solid fa-arrows-spin"></i> <span id="uiBtnSpinAll">Girar Ambas a la Vez</span>
+                </button>
+            </div>
         </div>
     </div>
 
@@ -51,16 +143,20 @@
         <!-- ==================== RULETA 1 (Estudiantes) ==================== -->
         <section class="wheel-unit" id="unit1">
             <div class="wheel-header">
-                <h2>Ruleta 1</h2>
+                <h2 id="uiWheel1Title"><i class="fa-solid fa-users text-indigo"></i> <span>Ruleta 1</span></h2>
                 <div class="header-actions">
-                    <button id="importBtn1" class="btn-action-sm btn-import">⚡ Pegar de Plataforma</button>
-                    <button id="clearBtn1" class="btn-action-sm btn-clear">Vaciar</button>
+                    <button id="importBtn1" class="btn-action-sm btn-import">
+                        <i class="fa-solid fa-bolt"></i> <span id="uiBtnImport1">Pegar de Plataforma</span>
+                    </button>
+                    <button id="clearBtn1" class="btn-action-sm btn-clear">
+                        <i class="fa-regular fa-trash-can"></i> <span id="uiBtnClear1">Vaciar</span>
+                    </button>
                 </div>
             </div>
 
             <!-- Frase personalizada para síntesis de voz -->
             <div class="voice-prefix-wrapper">
-                <label for="voicePrefix1">Anunciar con:</label>
+                <label for="voicePrefix1"><i class="fa-solid fa-comment-dots text-indigo"></i> <span id="uiLabelPrefix1">Anunciar con:</span></label>
                 <input type="text" id="voicePrefix1" value="Turno de">
             </div>
 
@@ -69,7 +165,7 @@
                 <textarea id="input1" placeholder="Pega los nombres aquí..."></textarea>
                 <div class="counter">
                     <span id="saveStatus1" class="save-status">Sincronizado</span>
-                    <span id="counter1">Total: 0 nombres</span>
+                    <span id="counter1">Total: 0</span>
                 </div>
             </div>
 
@@ -77,23 +173,29 @@
             <div class="wheel-stage">
                 <div class="pointer"></div>
                 <canvas id="canvas1" width="370" height="370" title="Haz clic sobre la ruleta para girar"></canvas>
-                <button id="spinBtn1" class="btn-spin" disabled>¡Girar Ruleta 1!</button>
+                <button id="spinBtn1" class="btn-spin" disabled>
+                    <i class="fa-solid fa-play"></i> <span id="uiBtnSpin1">¡Girar Ruleta 1!</span>
+                </button>
             </div>
         </section>
 
         <!-- ==================== RULETA 2 (Temas / Actividades) ==================== -->
         <section class="wheel-unit hidden" id="unit2">
             <div class="wheel-header">
-                <h2>Ruleta 2</h2>
+                <h2 id="uiWheel2Title"><i class="fa-solid fa-layer-group text-indigo"></i> <span>Ruleta 2</span></h2>
                 <div class="header-actions">
-                    <button id="importBtn2" class="btn-action-sm btn-import">⚡ Pegar de Plataforma</button>
-                    <button id="clearBtn2" class="btn-action-sm btn-clear">Vaciar</button>
+                    <button id="importBtn2" class="btn-action-sm btn-import">
+                        <i class="fa-solid fa-bolt"></i> <span id="uiBtnImport2">Pegar de Plataforma</span>
+                    </button>
+                    <button id="clearBtn2" class="btn-action-sm btn-clear">
+                        <i class="fa-regular fa-trash-can"></i> <span id="uiBtnClear2">Vaciar</span>
+                    </button>
                 </div>
             </div>
 
             <!-- Frase personalizada para síntesis de voz -->
             <div class="voice-prefix-wrapper">
-                <label for="voicePrefix2">Anunciar con:</label>
+                <label for="voicePrefix2"><i class="fa-solid fa-comment-dots text-indigo"></i> <span id="uiLabelPrefix2">Anunciar con:</span></label>
                 <input type="text" id="voicePrefix2" value="Tema">
             </div>
 
@@ -102,7 +204,7 @@
                 <textarea id="input2" placeholder="Tema 1&#10;Tema 2&#10;Tema 3&#10;Tema 4"></textarea>
                 <div class="counter">
                     <span id="saveStatus2" class="save-status">Sincronizado</span>
-                    <span id="counter2">Total: 0 temas</span>
+                    <span id="counter2">Total: 0</span>
                 </div>
             </div>
 
@@ -110,7 +212,9 @@
             <div class="wheel-stage">
                 <div class="pointer"></div>
                 <canvas id="canvas2" width="370" height="370" title="Haz clic sobre la ruleta para girar"></canvas>
-                <button id="spinBtn2" class="btn-spin" disabled>¡Girar Ruleta 2!</button>
+                <button id="spinBtn2" class="btn-spin" disabled>
+                    <i class="fa-solid fa-play"></i> <span id="uiBtnSpin2">¡Girar Ruleta 2!</span>
+                </button>
             </div>
         </section>
 
@@ -121,6 +225,9 @@
     <!-- 1. Modal de Anuncio de Ganadores (Individual o Dual) -->
     <div id="modalOverlay" class="modal-overlay">
         <div class="modal">
+            <div class="modal-trophy-badge">
+                <i class="fa-solid fa-trophy"></i>
+            </div>
             <h3 id="modalTitle">¡Resultado del Giro!</h3>
             <div id="resultsContainer" class="results-container"></div>
             <div id="modalTimer" class="modal-timer"></div>
@@ -144,7 +251,7 @@
     <div id="cleanerOverlay" class="modal-overlay">
         <div class="modal cleaner-modal">
             <h3 id="cleanerTitle">Importar y Limpiar Lista</h3>
-            <p class="cleaner-desc">
+            <p id="uiCleanerDesc" class="cleaner-desc">
                 Pega abajo el texto copiado de la plataforma (incluso con notas, correos y faltas). Se extraerán los
                 nombres automáticamente:
             </p>
@@ -154,11 +261,11 @@
             <div class="cleaner-options">
                 <label>
                     <input type="checkbox" id="invertNameOrder" checked>
-                    Invertir a formato natural ("Danna Sofia Amaris Camargo") para pronunciación fluida
+                    <span id="uiLabelInvertOrder">Invertir a formato natural ("Danna Sofia Amaris Camargo") para pronunciación fluida</span>
                 </label>
                 <label>
                     <input type="checkbox" id="toTitleCase" checked>
-                    Convertir a tipo Título (Mayúsculas y minúsculas)
+                    <span id="uiLabelTitleCase">Convertir a tipo Título (Mayúsculas y minúsculas)</span>
                 </label>
             </div>
 
